@@ -234,30 +234,39 @@ function Viewer() {
 	let play = false;
 
 	cubeRenderer.domElement.onclick = function(evt) {
+    cubeRenderer.domElement.onmousemove(evt);
 
-		cubeRenderer.domElement.onmousemove(evt);
+    if (!activePlane || hasMoved) {
+        return false;
+    }
 
-		if (!activePlane || hasMoved) {
-			return false;
-		}
+    oldPosition.copy(camera.position);
 
-		oldPosition.copy(camera.position);
+    let distance = camera.position.clone().sub(controller.target).length();
+    newPosition.copy(controller.target);
 
-		let distance = camera.position.clone().sub(controller.target).length();
-		newPosition.copy(controller.target);
+    if (activePlane.position.x !== 0) {
+        newPosition.x += activePlane.position.x < 0 ? -distance : distance;
+    } else if (activePlane.position.y !== 0) {
+        newPosition.y += activePlane.position.y < 0 ? -distance : distance;
+    } else if (activePlane.position.z !== 0) {
+        newPosition.z += activePlane.position.z < 0 ? -distance : distance;
+    }
 
-		if (activePlane.position.x !== 0) {
-			newPosition.x += activePlane.position.x < 0 ? -distance : distance;
-		} else if (activePlane.position.y !== 0) {
-			newPosition.y += activePlane.position.y < 0 ? -distance : distance;
-		} else if (activePlane.position.z !== 0) {
-			newPosition.z += activePlane.position.z < 0 ? -distance : distance;
-		}
+    camera.position.copy(newPosition);
 
-		//play = true;
-		//startTime = Date.now();
-		camera.position.copy(newPosition);
-	}
+    let raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(new THREE.Vector2(0, 0), camera); // Center of the screen
+
+    let intersects = raycaster.intersectObjects(loadedMeshes);
+    if (intersects.length > 0) {
+        let selectedObject = intersects[0].object;
+        if (selectedObject.detailsUrl) {
+            window.open(selectedObject.detailsUrl, '_blank'); // Open details page in a new tab
+        }
+    }
+};
+
 
 	cubeRenderer.domElement.ontouchmove = function(e) {
 		let rect = e.target.getBoundingClientRect();
@@ -912,6 +921,7 @@ function Viewer() {
 							}
 							updateSelectDom(child)
 						});
+						window.location.href = 'details.html';
 					}
 					
 					let visible = document.createElement('div');
