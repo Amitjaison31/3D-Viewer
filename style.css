@@ -1,0 +1,36 @@
+body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  h1,
+  table {
+    margin-left: 0;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    border: 1px solid #ccc;
+    padding: 5px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #eee;
+  }
+  
+  a {
+    color: blue;
+    text-decoration: underline;
+  }
+  
+  .warranty-link,
+  .service-link {
+    color: blue;
+    font-weight: bold;
+  }
+  
